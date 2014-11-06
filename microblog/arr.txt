@@ -1,7 +1,0 @@
-createconnection,
-createpool,
-createpoolcluster,
-createquery,
-types,
-escape,
-escapeid
