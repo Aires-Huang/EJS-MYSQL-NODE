@@ -9,9 +9,7 @@ exports.post = function(req, res) {
 	var password = md5.update(req.body.password).digest('base64');
 
 	User.get(req.body.username, function(err, user) {
-		console.log(user)
 		if (!user) {
-			console.log(1)
 			req.flash('error', ' 用户不存在');
 			return res.redirect('/login');
 		}
@@ -20,7 +18,6 @@ exports.post = function(req, res) {
 			req.flash('error', ' 用户口令错误');
 			return res.redirect('/login');
 		}
-		console.log(2)
 		req.session.user = user;
 		req.flash('success', ' 登入成功');
 		return res.redirect('/');
