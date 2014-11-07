@@ -3,6 +3,10 @@ var crypto = require('crypto');
 var User = require('../db/user');
 
 exports.post = function(req, res) {
+	if (req.session.user) {
+		req.flash('error', '已登入');
+		return res.redirect('/');
+	}
 	if (req.body['password-repeat'] != req.body['password']) {
 		var ss = req.flash('error', '密码不一致');
 		return res.redirect('/reg');
@@ -20,12 +24,14 @@ exports.post = function(req, res) {
 			req.flash('error', err);
 			return res.redirect('/reg');
 		}
-		newUser.save(function(err) {
+		newUser.save(function(err,uuid) {
 			if (err) {
 				req.flash('error', err);
 				return res.redirect('/reg');
-
 			}
+			console.log('uuid:');
+			console.log(uuid);
+			newUser.userid = uuid;
 			req.session.user = newUser;
 			req.flash('success', ' 注册成功');
 			res.redirect('/');
@@ -33,23 +39,11 @@ exports.post = function(req, res) {
 	});
 };
 exports.get = function(req, res) {
-	res.render('reg', {
-		title: '帐号注册'
-	});
-};
-
-exports.checklogin = function(req, res, next) {
-	if (!req.session.user) {
-		req.flash('error', '未登入');
-		return res.redirect('/login');
-	}
-	next();
-};
-
-exports.checknotlogin = function(req, res, next) {
 	if (req.session.user) {
 		req.flash('error', '已登入');
 		return res.redirect('/');
 	}
-	next();
+	res.render('reg', {
+		title: '帐号注册'
+	});
 };
