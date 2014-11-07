@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title><%= title %></title>
+	<link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+	<% var uname = data.name; %>
+	# <% if(data.name){ %><%= data.name %><% }else{ %><%= data.username%><% } %>
+
+	<div class="hero-unit">
+		<h1><%= data.username %>,欢迎来到 Microblog</h1>
+		<p>Microblog 是一个基于 Node.js 的微博系统。</p>
+		<p>
+			昵称：
+			<div ><%= uname %></div>
+			<input type="text" value="">
+			年龄：
+			<div ><% if(data.age){ %><%= data.age %><% }else{ %>0<% } %></div>
+		</p>
+	</div>
+</body>
+</html>

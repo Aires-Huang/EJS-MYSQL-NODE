@@ -3,6 +3,7 @@ exports.index = function(req, res) {;
 	var user = req.session.user||'';
 	console.log('user:');
 	console.log(user);
+	console.log(req.flash('success'));
 	if(user.username) {
 		user.username = decodeURIComponent(user.username);
 	}
