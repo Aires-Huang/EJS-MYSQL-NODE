@@ -1,5 +1,33 @@
 var mysql = require('./db');
-var uid = require('../utils/uuid'); //用于生成id
+var sql_user = {
+	// table[users]
+	insert_USERS: function(obj,call) {
+		var sql_USERS = "insert into users (username,password) values(?,?)";
+		var USERS_POSTDATA = [obj.name, obj.pwd]; // [uuid, user.username, user.password];
+		mysql.query(sql_USERS, USERS_POSTDATA, function(err, results, fields) {
+			if (err) {
+				throw err;
+			} else {
+				var uuid = results.insertId;
+				sql_user.insert_USERDATA({id:uuid, name:obj.name});
+				return call(err, uuid, fields);
+			}
+		});
+	},
+	// // table[userdata]
+	insert_USERDATA: function(obj) {
+		var date = new Date();
+		var USERDATA_POSTDATA = [obj.id, obj.name,date];
+		var sql_USERDATA = "insert into userdata (userid,username,create_time) values(?,?,?)";
+		mysql.query(sql_USERDATA, USERDATA_POSTDATA, function(err, results, fields) {
+			if (err) {
+				throw err;
+			}
+		});
+	}
+};
+
+
 function User(user) {
 	this.username = user.username;
 	this.password = user.password;
@@ -10,37 +38,18 @@ User.prototype.save = function save(call) {
 		username: decodeURIComponent(this.username),
 		password: this.password
 	};
-	var uuid = uid.v4();
-
-	// table[users]
-	var sql_USERS = "insert into users (userid,username,password) values(?,?,?)";
-	var USERS_POSTDATA =  [uuid, user.username, user.password];
-	mysql.query(sql_USERS,USERS_POSTDATA, function(err, results, fields) {
-		if (err) {
-			throw err;
-		} else {
-			return call(err, uuid, fields);
-		}
-	});
-	// // table[userdata]
-	var USERDATA_POSTDATA = [uuid, user.username];
-	var sql_USERDATA = "insert into userdata (userid,username) values(?,?)";
-	mysql.query(sql_USERDATA,USERDATA_POSTDATA, function(err, results, fields) {
-		console.log(results)
-		if (err) {
-			throw err;
-		} 
-	});
+	sql_user.insert_USERS({ name:user.username, pwd:user.password},call);
 
 };
+
 User.get = function get(username, call) {
 	// 读取 users 集合
 	var sql = "select c.userid,c.username,c.password from users c where c.username='" + decodeURIComponent(username) + "'";
-	mysql.query(sql, function(err, results,fields) {
+	mysql.query(sql, function(err, results, fields) {
 		if (err) {
 			throw err;
 		} else {
-			call(err, results[0],fields);
+			call(err, results[0], fields);
 		}
 	});
 };

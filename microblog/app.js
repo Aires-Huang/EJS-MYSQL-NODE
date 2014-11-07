@@ -15,6 +15,7 @@ var users = require('./routes/user');
 var login = require('./routes/login');
 var employee = require('./routes/employee');
 var reg = require('./routes/reg');
+var my = require('./routes/my');
 
 var app = express();
 
@@ -24,6 +25,7 @@ app.set('view engine', 'ejs');
 
 
 app.use(flash());
+
 app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -40,8 +42,6 @@ app.use(app.router);
 
 app.get('/', routes.index);
 
-
-
 app.get('/users', users.list);
 
 app.get('/employee', function(req, res) {
@@ -53,15 +53,18 @@ app.get('/employee', function(req, res) {
         }
     });
 });
-app.get('/reg', reg.checknotlogin);
-app.get('/reg', reg.get);
-app.post('/reg', reg.checknotlogin);
-app.post('/reg', reg.post);
+//注册
 
-app.get('/login', login.checkNotLogin);
+app.get('/reg', reg.get);
+app.post('/reg', reg.post);
+//登录
 app.get('/login', login.get);
-app.post('/login', login.checkNotLogin);
 app.post('/login', login.post);
+//用户个人信息
+app.get('/my', my.get);
+
+
+
 app.use(function(req, res, next) {
     console.log('xxxxxxxxxxx')
     var error = req.flash('error');
@@ -72,10 +75,10 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.get('/quit', function (req, res) { 
-  req.session.user =  null; 
-  req.flash('success', '登出成功'); 
-  res.redirect('/'); 
+app.get('/quit', function(req, res) {
+    req.session.user = null;
+    req.flash('success', '登出成功');
+    res.redirect('/');
 });
 
 /// catch 404 and forwarding to error handler
