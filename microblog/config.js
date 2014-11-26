@@ -4,4 +4,4 @@ exports.config = {
 	user: 'root',
 	password: '',
 	db: 'test'
-};
+}; 
