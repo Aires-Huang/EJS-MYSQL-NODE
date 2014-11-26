@@ -63,8 +63,6 @@ app.post('/login', login.post);
 //用户个人信息
 app.get('/my', my.get);
 
-
-
 app.use(function(req, res, next) {
     console.log('xxxxxxxxxxx')
     var error = req.flash('error');
