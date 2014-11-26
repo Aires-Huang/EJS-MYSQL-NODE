@@ -8,7 +8,6 @@ var bodyParser = require('body-parser');
 var mysql = require('./db/db');
 var flash = require('connect-flash');
 
-
 var routes = require('./routes');
 var index = require('./routes/index');
 var users = require('./routes/user');
